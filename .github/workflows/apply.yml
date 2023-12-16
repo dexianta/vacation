@@ -13,7 +13,9 @@ jobs:
 
     - name: Update Vacation Tracker
       run: |
-          echo "${{ github.event.issue.body }}" | yq ea 'select(fi==0) *+ select(fi==1) // {}' - vacation.yml | yq ea '.[] |= unique' > vacation.yml
+          echo "${{ github.event.issue.body }}" | \
+          yq ea 'select(fi==0) *+ select(fi==1) // {}' - vacation.yml | \
+          yq ea '.[] |= unique' > tmp.yml && mv tmp.yml vacation.yml
 
     # Step to generate a timestamp for the branch name
     - name: Generate Timestamp for Branch Name
