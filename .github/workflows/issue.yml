@@ -1,0 +1,20 @@
+name: Open PR
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  update-vacation-tracker:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Update Vacation Tracker
+      env:
+        ISSUE_NUMBER: ${{ github.event.issue.number }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        bash util.sh
+
