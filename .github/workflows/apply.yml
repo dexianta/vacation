@@ -15,10 +15,15 @@ jobs:
       run: |
           echo "${{ github.event.issue.body }}" | yq ea 'select(fi==0) *+ select(fi==1)' - vacation.yml | yq ea '.[] |= unique' > vacation.yml
 
+    # Step to generate a timestamp for the branch name
+    - name: Generate Timestamp for Branch Name
+      id: timestamp
+      run: echo "TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
+
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
       with:
         commit-message: ${{ github.event.issue.title }} apply vacation
         body: need vacation
         title: vacation
-        branch: "${date +%s}"
+        branch: "vacation-${{ env.TIMESTAMP }}"
