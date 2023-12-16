@@ -24,6 +24,6 @@ jobs:
       uses: peter-evans/create-pull-request@v5
       with:
         commit-message: ${{ github.event.issue.title }} apply vacation
-        body: need vacation
+        body: "fix #${{ github.event.issue.number }}"
         title: vacation
         branch: "vacation-${{ env.TIMESTAMP }}"
