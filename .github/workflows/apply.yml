@@ -19,7 +19,6 @@ jobs:
       uses: peter-evans/create-pull-request@v5
       with:
         commit-message: ${{ github.event.issue.title }} apply vacation
-        committer: system
         body: need vacation
         title: vacation
         branch: "${date +%s}"
