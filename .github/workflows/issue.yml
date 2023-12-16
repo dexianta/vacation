@@ -12,10 +12,6 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Update Vacation Tracker
-      env:
-        ISSUE_NUMBER: ${{ github.event.issue.number }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        issue_content=$(gh issue view $ISSUE_NUMBER --json body -q .body)
-        echo $issue_content
+        echo ${{ github.event.issue.body }}
 
