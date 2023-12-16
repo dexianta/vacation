@@ -22,4 +22,4 @@ jobs:
         committer: system
         body: need vacation
         title: vacation
-        branch: ${{ date +%s }}
+        branch: "${date +%s}"
