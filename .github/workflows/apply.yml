@@ -1,0 +1,25 @@
+name: Apply vacation
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  update-vacation-tracker:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Update Vacation Tracker
+      run: |
+          echo "${{ github.event.issue.body }}" | yq ea 'select(fi==0) *+ select(fi==1)' - vacation.yml | yq ea '.[] |= unique' > vacation.yml
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        commit-message: ${{ github.event.issue.title }} apply vacation
+        committer: system
+        body: need vacation
+        title: vacation
+        branch: ${{ date +%s }}
