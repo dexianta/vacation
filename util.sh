@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Fetch issue details
-issue_content=$(gh issue view $ISSUE_NUMBER --json body -q .body)
 
 # Extract the username and dates
 # user=$(echo $issue_content | cut -d ':' -f 1)
