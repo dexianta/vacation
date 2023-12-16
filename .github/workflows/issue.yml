@@ -13,5 +13,5 @@ jobs:
 
     - name: Update Vacation Tracker
       run: |
-        echo ${{ github.event.issue.body }}
+          echo "body: ${{ github.event.issue.body }}"
 
