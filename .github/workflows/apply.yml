@@ -15,9 +15,9 @@ jobs:
       run: |
           body="${{ github.event.issue.body }}" 
           len=$(echo $body | yq 'length')
-          if [ "$body" -eq 1 ]; then
+          if [ $len -ne 1 ]; then
             echo 'should have just one key'
-            exit 1
+            exit 5
           fi 
           
           key=$(echo $body | yq eval 'keys | .[0]')
