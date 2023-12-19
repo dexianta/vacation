@@ -21,7 +21,7 @@ jobs:
           fi 
           
           key=$(cat $body | yq eval 'keys | .[0]')
-          body=$( echo $body | yq ea '.dexian |= map (format_datetime("2006-01-02 Monday"))' )
+          body=$( echo $body | yq ea ".${key} |= map (format_datetime('2006-01-02 Monday'))" )
 
           cat $body | \
           yq ea 'select(fi==0) *+ select(fi==1) // {}' - vacation.yml | \
