@@ -14,16 +14,16 @@ jobs:
     - name: Update Vacation Tracker
       run: |
           body="${{ github.event.issue.body }}" 
-          len=$(echo $body | yq 'length')
+          len=$(echo "$body" | yq 'keys | length')
           if [ $len -ne 1 ]; then
             echo 'should have just one key'
             exit 5
           fi 
           
-          key=$(echo $body | yq eval 'keys | .[0]')
-          body=$( echo $body | yq ea ".${key} |= map (format_datetime('2006-01-02 Monday'))" )
+          key=$( echo "$body" | yq eval 'keys | .[0]' )
+          body=$( echo "$body" | yq ea ".${key} |= map (format_datetime(\"2006-01-02 Monday\"))" )
 
-          echo $body | \
+          echo "$body" | \
           yq ea 'select(fi==0) *+ select(fi==1) // {}' - vacation.yml | \
           yq ea '.[] |= unique' > tmp.yml && mv tmp.yml vacation.yml
 
