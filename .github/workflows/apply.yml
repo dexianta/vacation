@@ -27,7 +27,7 @@ jobs:
 
     - name: update profile
       run: |
-          echo "${{ github.event.issue.body }}" | ./update_profile.sh > tmp.yml
+          echo "${{ github.event.issue.body }}" | ./scripts/update_profile.sh > tmp.yml
           mv tmp.yml profile.yml
 
 
