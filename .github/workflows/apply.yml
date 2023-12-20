@@ -11,6 +11,24 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
+    - name: Checks
+      run: |
+        # user is in profile
+        body="${{ github.event.issue.body }}" 
+        len=$(echo "$body" | yq 'keys | length')
+        if [ $len -ne 1 ]; then
+          echo 'should have just one key'
+          exit 5
+        fi 
+        key=$( echo "$body" | yq eval 'keys | .[0]' )
+
+        if yq e ".${key}" profile.yml > /dev/null; then
+        else
+          echo "user doesn't exist"
+          exit 4
+        fi
+
+
     - name: Update Vacation Tracker
       run: |
           body="${{ github.event.issue.body }}" 
@@ -26,6 +44,16 @@ jobs:
           echo "$body" | \
           yq ea 'select(fi==0) *+ select(fi==1) // {}' - vacation.yml | \
           yq ea '.[] |= unique' > tmp.yml && mv tmp.yml vacation.yml
+
+    - name: Post check
+      run: |
+        # check if they have enough holiday
+
+    - name: update profile
+      run: |
+          key=$( echo "${{ github.event.issue.body }}" | yq eval 'keys | .[0]' )
+          updated=$(yq e ".${key}" profile.yml | awk '{print $2}' | cut -d '-' -f1 |  sort | uniq -c | awk '{print $2": "$1}' | yq e "{ \"${key}\": {\"counts\": .} }" -P)
+          echo "$update" > profile.yml
 
     # Step to generate a timestamp for the branch name
     - name: Generate Timestamp for Branch Name
