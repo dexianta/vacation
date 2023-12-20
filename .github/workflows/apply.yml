@@ -13,6 +13,7 @@ jobs:
 
     - name: Pre Check
       run: |
+        echo "${{ github.event.issue }}"
         # user is in profile
         body="${{ github.event.issue.body }}" 
         len=$(echo "$body" | yq 'keys | length')
