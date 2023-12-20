@@ -11,7 +11,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Checks
+    - name: Pre Check
       run: |
         # user is in profile
         body="${{ github.event.issue.body }}" 
@@ -23,6 +23,7 @@ jobs:
         key=$( echo "$body" | yq eval 'keys | .[0]' )
 
         if yq e ".${key}" profile.yml > /dev/null; then
+          echo "pre check pass"
         else
           echo "user doesn't exist"
           exit 4
