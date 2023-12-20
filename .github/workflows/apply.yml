@@ -2,7 +2,7 @@ name: Apply vacation
 
 on:
   issues:
-    types: [opened]
+    types: [opened, edited]
 
 jobs:
   update-vacation-tracker:
