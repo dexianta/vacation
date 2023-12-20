@@ -14,37 +14,12 @@ jobs:
     - name: Pre Check
       run: |
         # user is in profile
-        body="${{ github.event.issue.body }}" 
-        len=$(echo "$body" | yq 'keys | length')
-        if [ $len -ne 1 ]; then
-          echo 'should have just one key'
-          exit 5
-        fi 
-        key=$( echo "$body" | yq eval 'keys | .[0]' )
-
-        if yq e ".${key}" profile.yml > /dev/null; then
-          echo "pre check pass"
-        else
-          echo "user doesn't exist"
-          exit 4
-        fi
-
+        echo "${{ github.event.issue.body }}" | ./scripts/pre_check.sh
 
     - name: Update Vacation Tracker
       run: |
-          body="${{ github.event.issue.body }}" 
-          len=$(echo "$body" | yq 'keys | length')
-          if [ $len -ne 1 ]; then
-            echo 'should have just one key'
-            exit 5
-          fi 
-          
-          key=$( echo "$body" | yq eval 'keys | .[0]' )
-          body=$( echo "$body" | yq ea ".${key} |= map (format_datetime(\"2006-01-02 Monday\"))" )
-
-          echo "$body" | \
-          yq ea 'select(fi==0) *+ select(fi==1) // {}' - vacation.yml | \
-          yq ea '.[] |= unique' > tmp.yml && mv tmp.yml vacation.yml
+          echo "${{ github.event.issue.body }}"  | ./scripts/update_vacation.sh > tmp.yml
+          mv tmp.yml vacation.yml
 
     - name: Post check
       run: |
@@ -52,9 +27,7 @@ jobs:
 
     - name: update profile
       run: |
-          key=$( echo "${{ github.event.issue.body }}" | yq eval 'keys | .[0]' )
-          updated=$(yq e ".${key}" vacation.yml | awk '{print $2}' | cut -d '-' -f1 |  sort | uniq -c | awk '{print $2": "$1}' | yq e "{ \"${key}\": {\"counts\": .} }" -P)
-          echo "$updated" | yq ea 'select(fi==0) *+ select(fi==1) // {}' - profile.yml > tmp.yml
+          echo "${{ github.event.issue.body }}" | ./update_profile > tmp.yml
           mv tmp.yml profile.yml
 
 
