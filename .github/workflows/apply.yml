@@ -54,7 +54,7 @@ jobs:
       run: |
           key=$( echo "${{ github.event.issue.body }}" | yq eval 'keys | .[0]' )
           updated=$(yq e ".${key}" profile.yml | awk '{print $2}' | cut -d '-' -f1 |  sort | uniq -c | awk '{print $2": "$1}' | yq e "{ \"${key}\": {\"counts\": .} }" -P)
-          echo "$update" > profile.yml
+          echo "$updated" > profile.yml
 
     # Step to generate a timestamp for the branch name
     - name: Generate Timestamp for Branch Name
