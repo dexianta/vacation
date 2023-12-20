@@ -1,0 +1,26 @@
+name: Close Related PR on Issue Close
+
+on:
+  issues:
+    types: [closed]
+
+jobs:
+  close-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close Related PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueTitle = context.payload.issue.title;
+            const prNumberMatch = issueTitle.match(/#(\d+)/);
+            if (prNumberMatch) {
+              const prNumber = parseInt(prNumberMatch[1]);
+              github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                state: "closed"
+              });
+            }
+
